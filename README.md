@@ -1,2 +1,2 @@
 # ATS
-ATS is alarm, timer and stopwatch
+ATS is alarm, timer and stopwatch.
