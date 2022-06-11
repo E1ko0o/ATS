@@ -20,15 +20,10 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
         binding = FragmentStopwatchBinding.bind(view)
         viewModel = ViewModelProvider(this)[StopwatchViewModel::class.java]
 
-        binding.btnStart.setOnClickListener { viewModel.start() }
-        binding.btnStop.setOnClickListener { viewModel.stop() }
-        binding.btnPause.setOnClickListener { viewModel.pause() }
-
-        viewModel.liveData.observe(viewLifecycleOwner) {
-            binding.textClock.text = it
-        }
+        binding.btnStart.setOnClickListener { viewModel.start(binding.chronometer) }
+        binding.btnPause.setOnClickListener { viewModel.pause(binding.chronometer) }
+        binding.btnReset.setOnClickListener { viewModel.reset(binding.chronometer) }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +32,6 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
     ): View? {
         return inflater.inflate(R.layout.fragment_stopwatch, container, false)
     }
-
 
     companion object {
         fun newInstance(): StopwatchFragment {
