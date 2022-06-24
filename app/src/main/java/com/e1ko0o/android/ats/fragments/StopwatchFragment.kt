@@ -1,6 +1,7 @@
 package com.e1ko0o.android.ats.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,14 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
         binding.btnStart.setOnClickListener { viewModel.start(binding.chronometer) }
         binding.btnPause.setOnClickListener { viewModel.pause(binding.chronometer) }
         binding.btnReset.setOnClickListener { viewModel.reset(binding.chronometer) }
+
+        binding.chronometer.base = viewModel.getBase()
+        viewModel.initialReset(binding.chronometer)
+    }
+
+    override fun onDestroyView() {
+        viewModel.saveState()
+        super.onDestroyView()
     }
 
     override fun onCreateView(

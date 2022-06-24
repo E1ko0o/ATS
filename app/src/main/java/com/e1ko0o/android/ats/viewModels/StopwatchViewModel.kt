@@ -16,10 +16,11 @@ import kotlinx.coroutines.launch
 class StopwatchViewModel(application: Application) : AndroidViewModel(application) {
     private var startTime: Long = 0
     private var pauseTime: Long = 0
+    private var base: Long = 0
 
     fun start(chronometer: Chronometer) {
         startTime = SystemClock.elapsedRealtime()
-        chronometer.base = startTime + pauseTime
+        chronometer.base = base + startTime + pauseTime
         chronometer.start()
     }
 
@@ -28,8 +29,24 @@ class StopwatchViewModel(application: Application) : AndroidViewModel(applicatio
         chronometer.stop()
     }
 
-    fun reset(chronometer: Chronometer) {
-        chronometer.base = SystemClock.elapsedRealtime()
+    fun initialReset(chronometer: Chronometer) {
+        startTime = SystemClock.elapsedRealtime()
+        pauseTime = 0
+        chronometer.base = base + startTime + pauseTime
         chronometer.stop()
     }
+
+    fun reset(chronometer: Chronometer) {
+        startTime = SystemClock.elapsedRealtime()
+        pauseTime = 0
+        base = 0
+        chronometer.base = base + startTime + pauseTime
+        chronometer.stop()
+    }
+
+    fun saveState() {
+        this.base = pauseTime
+    }
+
+    fun getBase() = base
 }
