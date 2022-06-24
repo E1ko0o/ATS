@@ -10,30 +10,27 @@ import com.e1ko0o.android.ats.fragments.TimerFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var currentFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        currentFragment = StopwatchFragment.newInstance() // @todo alarm
-        changeFragment()
+        changeFragment(StopwatchFragment.getInstance()) // @todo alarm
 
         binding.bottomNavView.setOnItemSelectedListener {
             when(it.itemId) {
-                R.id.imAlarm -> currentFragment = AlarmFragment.newInstance()
-                R.id.imTimer -> currentFragment = TimerFragment.newInstance()
-                R.id.imStopwatch -> currentFragment = StopwatchFragment.newInstance()
+                R.id.imAlarm -> changeFragment(AlarmFragment.newInstance())
+                R.id.imTimer -> changeFragment(TimerFragment.newInstance())
+                R.id.imStopwatch -> changeFragment(StopwatchFragment.getInstance())
             }
-            changeFragment()
             true
         }
     }
 
-    private fun changeFragment() {
+    private fun changeFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, currentFragment)
+            .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }

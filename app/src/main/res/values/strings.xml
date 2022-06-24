@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">ATS</string>
     <string name="start">Start</string>
-    <string name="stop">Stop</string>
     <string name="pause">Pause</string>
     <string name="reset">Reset</string>
     <string name="start_time">00:00:00</string>

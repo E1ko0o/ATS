@@ -19,6 +19,7 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStopwatchBinding.bind(view)
         viewModel = ViewModelProvider(this)[StopwatchViewModel::class.java]
+        instance = this
 
         binding.btnStart.setOnClickListener { viewModel.start(binding.chronometer) }
         binding.btnPause.setOnClickListener { viewModel.pause(binding.chronometer) }
@@ -34,7 +35,12 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
     }
 
     companion object {
-        fun newInstance(): StopwatchFragment {
+        private var instance: StopwatchFragment? = null
+
+        fun getInstance(): StopwatchFragment {
+            instance?.let {
+                return it
+            }
             return StopwatchFragment()
         }
     }
