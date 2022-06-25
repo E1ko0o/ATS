@@ -22,12 +22,14 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
         viewModel = ViewModelProvider(this)[StopwatchViewModel::class.java]
         instance = this
 
-        binding.btnStart.setOnClickListener { viewModel.start(binding.chronometer) }
-        binding.btnPause.setOnClickListener { viewModel.pause(binding.chronometer) }
-        binding.btnReset.setOnClickListener { viewModel.reset(binding.chronometer) }
+        with(binding) {
+            btnStart.setOnClickListener { viewModel.start(chronometer) }
+            btnPause.setOnClickListener { viewModel.pause(chronometer) }
+            btnReset.setOnClickListener { viewModel.reset(chronometer) }
 
-        binding.chronometer.base = viewModel.getBase()
-        viewModel.initialReset(binding.chronometer)
+            chronometer.base = viewModel.getBase()
+            viewModel.initialReset(chronometer)
+        }
     }
 
     override fun onDestroyView() {

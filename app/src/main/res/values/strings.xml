@@ -11,4 +11,7 @@
     <string name="stopwatch">Stopwatch</string>
     <string name="timer">Timer</string>
     <string name="alarm">Alarm</string>
+    <string name="set_time">Set time</string>
+    <string name="minutes">Minutes</string>
+    <string name="seconds">Seconds</string>
 </resources>

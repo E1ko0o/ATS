@@ -16,12 +16,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        changeFragment(StopwatchFragment.getInstance()) // @todo alarm
+        changeFragment(TimerFragment.getInstance()) // @todo alarm
 
         binding.bottomNavView.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.imAlarm -> changeFragment(AlarmFragment.newInstance())
-                R.id.imTimer -> changeFragment(TimerFragment.newInstance())
+                R.id.imTimer -> changeFragment(TimerFragment.getInstance())
                 R.id.imStopwatch -> changeFragment(StopwatchFragment.getInstance())
             }
             true
