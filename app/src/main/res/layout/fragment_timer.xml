@@ -14,13 +14,13 @@
         android:textColor="@color/black"
         android:textSize="36sp" />
 
-    <Chronometer
-        android:id="@+id/chronometer"
+    <TextView
+        android:id="@+id/tvTimer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:countDown="true"
         android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="36sp" />
 
     <LinearLayout
@@ -31,33 +31,33 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="18sp"
             android:layout_weight="1"
-            android:text="@string/minutes"/>
+            android:text="@string/minutes"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/etMinutes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:layout_weight="1"
+            android:ems="10"
             android:inputType="number" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="18sp"
             android:layout_weight="1"
-            android:text="@string/seconds"/>
+            android:text="@string/seconds"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/etSeconds"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:layout_weight="1"
+            android:ems="10"
             android:inputType="number" />
     </LinearLayout>
 

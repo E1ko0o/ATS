@@ -1,11 +1,9 @@
 package com.e1ko0o.android.ats.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.e1ko0o.android.ats.R
@@ -25,24 +23,28 @@ class TimerFragment : Fragment(R.layout.fragment_timer) {
         instance = this
 
         with(binding) {
-            btnStart.setOnClickListener { viewModel.start(chronometer) }
-            btnPause.setOnClickListener { viewModel.pause(chronometer) }
-            btnReset.setOnClickListener { viewModel.reset(chronometer) }
+            btnStart.setOnClickListener { viewModel.start() }
+            btnPause.setOnClickListener { viewModel.pause() }
+            btnReset.setOnClickListener { viewModel.reset() }
             btnSetTime.setOnClickListener {
-                val minute = if (etMinutes.text.toString().isEmpty()) 0
-                else etMinutes.text.toString().toInt()
-                val second = if (etSeconds.text.toString().isEmpty()) 0
-                else etSeconds.text.toString().toInt()
-                viewModel.setTime(chronometer, minute, second)
+                val minutes = if (etMinutes.text.toString().isEmpty())
+                    0
+                else
+                    etMinutes.text.toString().toInt()
+                val seconds = if (etSeconds.text.toString().isEmpty())
+                    0
+                else
+                    etSeconds.text.toString().toInt()
+
+                viewModel.setTime(minutes, seconds)
+                tvTimer.text = viewModel.getFormattedTime(minutes, seconds)
             }
 
-            chronometer.base = viewModel.getBase()
-            viewModel.initialReset(chronometer)
-            chronometer.setOnChronometerTickListener {
-                if (viewModel.isFinished(chronometer)) {
-                    Toast.makeText(context, "Timer is done!", Toast.LENGTH_SHORT).show()
-                }
+            viewModel.liveData.observe(viewLifecycleOwner) {
+                tvTimer.text = it
             }
+
+            viewModel.initialReset()
         }
     }
 
