@@ -1,11 +1,17 @@
 package com.e1ko0o.android.ats.viewModels
 
 import android.app.Application
-import android.util.Log
+import android.content.Context.VIBRATOR_SERVICE
+import android.media.SoundPool
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.e1ko0o.android.ats.R
 import kotlinx.coroutines.*
+
 
 const val TAG = "MY_TAG"
 
@@ -31,8 +37,28 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
                     delay(1000)
                 curTime = i
                 liveData.value = getFormattedTime(curTime)
-                if (i == 0)
-                    Log.d(TAG, "!!!!!!!!!!!!!!!!!!!DONE!!!!!!!!!!!!!!!!") // @todo use sound
+                if (i == 0) {
+                    val sp = SoundPool.Builder().build()
+                    val context = getApplication<Application>().applicationContext
+                    sp.load(context, R.raw.praise_the_lord, 1)
+                    sp.setOnLoadCompleteListener { soundPool, soundID, status ->
+                        if (status == 0) {
+                            soundPool.play(soundID, 1F, 1F, 1, 1, 1F)
+                            if (Build.VERSION.SDK_INT >= 26) {
+                                (context.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(
+                                    VibrationEffect.createOneShot(
+                                        2000,
+                                        VibrationEffect.DEFAULT_AMPLITUDE
+                                    )
+                                )
+                            } else {
+                                (context.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(2000)
+                            }
+                        }
+                    }
+                    delay(5000)
+                    sp.release()
+                }
             }
         }
     }
