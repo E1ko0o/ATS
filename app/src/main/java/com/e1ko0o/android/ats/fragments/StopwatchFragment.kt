@@ -23,12 +23,14 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
         instance = this
 
         with(binding) {
-            btnStart.setOnClickListener { viewModel.start(chronometer) }
-            btnPause.setOnClickListener { viewModel.pause(chronometer) }
-            btnReset.setOnClickListener { viewModel.reset(chronometer) }
+            with(viewModel) {
+                btnStart.setOnClickListener { start(chronometer) }
+                btnPause.setOnClickListener { pause(chronometer) }
+                btnReset.setOnClickListener { reset(chronometer) }
 
-            chronometer.base = viewModel.getBase()
-            viewModel.initialReset(chronometer)
+                chronometer.base = getBase()
+                initialReset(chronometer)
+            }
         }
     }
 

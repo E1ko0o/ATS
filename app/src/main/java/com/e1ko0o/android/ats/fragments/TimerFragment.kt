@@ -1,11 +1,13 @@
 package com.e1ko0o.android.ats.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.e1ko0o.android.ats.R
 import com.e1ko0o.android.ats.databinding.FragmentTimerBinding
 import com.e1ko0o.android.ats.viewModels.TimerViewModel
@@ -23,30 +25,34 @@ class TimerFragment : Fragment(R.layout.fragment_timer) {
         instance = this
 
         with(binding) {
-            btnStart.setOnClickListener { viewModel.start() }
-            btnPause.setOnClickListener { viewModel.pause() }
-            btnReset.setOnClickListener { viewModel.reset() }
-            btnSetTime.setOnClickListener {
-                val minutes = if (etMinutes.text.toString().isEmpty())
-                    0
-                else
-                    etMinutes.text.toString().toInt()
-                val seconds = if (etSeconds.text.toString().isEmpty())
-                    0
-                else
-                    etSeconds.text.toString().toInt()
+            with(viewModel) {
+                btnStart.setOnClickListener { start() }
+                btnPause.setOnClickListener { pause() }
+                btnReset.setOnClickListener { reset() }
+                btnSetTime.setOnClickListener {
+                    val minutes = if (etMinutes.text.toString().isEmpty())
+                        0
+                    else
+                        etMinutes.text.toString().toInt()
+                    val seconds = if (etSeconds.text.toString().isEmpty())
+                        0
+                    else
+                        etSeconds.text.toString().toInt()
 
-                viewModel.setTime(minutes, seconds)
-                tvTimer.text = viewModel.getFormattedTime(minutes, seconds)
+                    setTime(minutes, seconds)
+                    tvTimer.text = getFormattedTime(minutes, seconds)
+                }
+
+                tvTimer.text = getFormattedTime(0, getBase())
+                initialReset()
+                liveData.observe(viewLifecycleOwner) {
+                    tvTimer.text = it
+                }
             }
-
-            viewModel.liveData.observe(viewLifecycleOwner) {
-                tvTimer.text = it
-            }
-
-            viewModel.initialReset()
         }
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +60,11 @@ class TimerFragment : Fragment(R.layout.fragment_timer) {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_timer, container, false)
+    }
+
+    override fun onDestroyView() {
+        viewModel.saveState()
+        super.onDestroyView()
     }
 
     companion object {
