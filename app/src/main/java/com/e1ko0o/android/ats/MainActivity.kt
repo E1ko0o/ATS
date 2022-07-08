@@ -1,9 +1,11 @@
 package com.e1ko0o.android.ats
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
 import com.e1ko0o.android.ats.databinding.ActivityMainBinding
 import com.e1ko0o.android.ats.fragments.AlarmFragment
 import com.e1ko0o.android.ats.fragments.StopwatchFragment
@@ -16,8 +18,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // @todo activity recreated with rotating
-        changeFragment(TimerFragment.getInstance()) // @todo fragment alarm should be first
 
         binding.bottomNavView.setOnItemSelectedListener {
             when(it.itemId) {
@@ -27,6 +27,14 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        if (binding.fragmentContainer.isEmpty()) {
+            changeFragment(AlarmFragment.newInstance())
+        }
+
     }
 
     private fun changeFragment(fragment: Fragment) {

@@ -1,14 +1,16 @@
 package com.e1ko0o.android.ats.viewModels
 
 import android.app.Application
+import android.content.Context.VIBRATOR_SERVICE
 import android.media.SoundPool
-import android.util.Log
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.e1ko0o.android.ats.R
 import kotlinx.coroutines.*
-
-const val TAG = "MY_TAG"  //@todo save state while rotating
 
 class TimerViewModel(application: Application) : AndroidViewModel(application) {
     private var startTime: Int = 0
@@ -34,7 +36,7 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
                 liveData.value = getFormattedTime(curTime)
                 if (i == 0) {
                     val sp = SoundPool.Builder().build()
-                    /*val context = getApplication<Application>().applicationContext
+                    val context = getApplication<Application>().applicationContext
                     sp.load(context, R.raw.praise_the_lord, 1)
                     sp.setOnLoadCompleteListener { soundPool, soundID, status ->
                         if (status == 0) {
@@ -47,12 +49,14 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
                                     )
                                 )
                             } else {
-                                (context.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(2000)
+                                (context.getSystemService(VIBRATOR_SERVICE) as Vibrator).vibrate(
+                                    2000
+                                )
                             }
                         }
                     }
                     delay(5000)
-                    sp.release()*/
+                    sp.release()
                 }
             }
         }
@@ -71,9 +75,6 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         startTime = 0
         pauseTime = 0
         curTime = 0
-        Log.d(TAG, "initialReset() base $base")
-        Log.d(TAG, "initialReset() " + getFormattedTime(base + startTime + pauseTime + curTime))
-        Log.d(TAG, "-")
         liveData.value = getFormattedTime(base + startTime + pauseTime + curTime)
         job.cancel(
             "Job canceled by TimerViewModel.initialReset()",
@@ -82,17 +83,10 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun saveState() {
-        Log.d(TAG, "saveState() base $base")
         base += curTime + startTime + pauseTime
-        Log.d(TAG, "saveState() after base $base")
-        Log.d(TAG, "-")
     }
 
-    fun getBase(): Int {
-        Log.d(TAG, "getBase() $base")
-        Log.d(TAG, "-")
-        return base
-    }
+    fun getBase() = base
 
     fun reset() {
         startTime = 0
@@ -111,9 +105,7 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         base = minutes * 60 + seconds
     }
 
-    fun getFormattedTime(minutes: Int, seconds: Int): String {
-        return getFormattedTime(minutes * 60 + seconds)
-    }
+    fun getFormattedTime(minutes: Int, seconds: Int) = getFormattedTime(minutes * 60 + seconds)
 
     private fun getFormattedTime(seconds: Int): String {
         val minute = seconds / 60

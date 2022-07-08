@@ -1,7 +1,6 @@
 package com.e1ko0o.android.ats.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +18,8 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentStopwatchBinding.bind(view)
-        viewModel = ViewModelProvider(this)[StopwatchViewModel::class.java]
         instance = this
+        viewModel = ViewModelProvider(this)[StopwatchViewModel::class.java]
 
         with(binding) {
             with(viewModel) {
@@ -34,17 +33,17 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
         }
     }
 
-    override fun onDestroyView() {
-        viewModel.saveState()
-        super.onDestroyView()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_stopwatch, container, false)
+    }
+
+    override fun onDestroyView() {
+        viewModel.saveState()
+        super.onDestroyView()
     }
 
     companion object {

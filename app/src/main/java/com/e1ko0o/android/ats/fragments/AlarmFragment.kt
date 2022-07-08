@@ -10,7 +10,12 @@ class AlarmFragment : Fragment(R.layout.fragment_alarm) {
     private lateinit var viewModel: AlarmViewModel
 
     companion object {
-        fun newInstance(): AlarmFragment{
+        private var instance: AlarmFragment? = null
+
+        fun getInstance(): AlarmFragment {
+            instance?.let {
+                return it
+            }
             return AlarmFragment()
         }
     }
