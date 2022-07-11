@@ -7,16 +7,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.e1ko0o.android.ats.R
-import com.e1ko0o.android.ats.databinding.FragmentTimerBinding
+import com.e1ko0o.android.ats.databinding.FragmentTimerSpinnerBinding
 import com.e1ko0o.android.ats.viewModels.TimerViewModel
 
-class TimerFragment : Fragment(R.layout.fragment_timer) {
-    private lateinit var binding: FragmentTimerBinding
+private const val FRAGMENT = R.layout.fragment_timer_spinner
+
+class TimerFragment : Fragment(FRAGMENT) {
+    private lateinit var binding: FragmentTimerSpinnerBinding
     private lateinit var viewModel: TimerViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentTimerBinding.bind(view)
+        binding = FragmentTimerSpinnerBinding.bind(view)
         instance = this
         viewModel = ViewModelProvider(this)[TimerViewModel::class.java]
 
@@ -24,19 +26,35 @@ class TimerFragment : Fragment(R.layout.fragment_timer) {
             with(viewModel) {
                 btnStart.setOnClickListener { start() }
                 btnPause.setOnClickListener { pause() }
-                btnReset.setOnClickListener { reset() }
-                btnSetTime.setOnClickListener {
-                    val minutes = if (etMinutes.text.toString().isEmpty())
-                        0
-                    else
-                        etMinutes.text.toString().toInt()
-                    val seconds = if (etSeconds.text.toString().isEmpty())
-                        0
-                    else
-                        etSeconds.text.toString().toInt()
+                btnReset.setOnClickListener {
+                    reset()
+                    numberPickerMinutes.value = 0
+                    numberPickerSeconds.value = 0
+                }
 
-                    setTime(minutes, seconds)
-                    tvTimer.text = getFormattedTime(minutes, seconds)
+                numberPickerMinutes.apply {
+                    minValue = 0
+                    maxValue = 59
+                }
+                numberPickerSeconds.apply {
+                    minValue = 0
+                    maxValue = 59
+                }
+                val array = mutableListOf<String>()
+                for (i in 0..59) {
+                    array.add(i.toString())
+                }
+                numberPickerMinutes.displayedValues = array.toTypedArray()
+                numberPickerSeconds.displayedValues = array.toTypedArray()
+                numberPickerMinutes.setOnValueChangedListener { numberPicker, oldVal, newVal ->
+                    val seconds = numberPickerSeconds.value
+                    setTime(newVal, seconds)
+                    tvTimer.text = getFormattedTime(newVal, seconds)
+                }
+                numberPickerSeconds.setOnValueChangedListener { numberPicker, oldVal, newVal ->
+                    val minutes = numberPickerMinutes.value
+                    setTime(minutes, newVal)
+                    tvTimer.text = getFormattedTime(minutes, newVal)
                 }
 
                 tvTimer.text = getFormattedTime(0, getBase())
@@ -49,13 +67,12 @@ class TimerFragment : Fragment(R.layout.fragment_timer) {
     }
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_timer, container, false)
+        return inflater.inflate(FRAGMENT, container, false)
     }
 
     override fun onDestroyView() {
