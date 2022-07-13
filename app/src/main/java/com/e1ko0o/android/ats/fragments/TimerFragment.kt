@@ -24,8 +24,13 @@ class TimerFragment : Fragment(FRAGMENT) {
 
         with(binding) {
             with(viewModel) {
-                btnStart.setOnClickListener { start() }
-                btnPause.setOnClickListener { pause() }
+                btnStart.setOnClickListener {
+                    if (!(numberPickerMinutes.value == 0 && numberPickerSeconds.value == 0))
+                        start()
+                }
+                btnPause.setOnClickListener {
+                    pause()
+                }
                 btnReset.setOnClickListener {
                     reset()
                     numberPickerMinutes.value = 0
@@ -49,18 +54,32 @@ class TimerFragment : Fragment(FRAGMENT) {
                 numberPickerMinutes.setOnValueChangedListener { numberPicker, oldVal, newVal ->
                     val seconds = numberPickerSeconds.value
                     setTime(newVal, seconds)
-                    tvTimer.text = getFormattedTime(newVal, seconds)
                 }
                 numberPickerSeconds.setOnValueChangedListener { numberPicker, oldVal, newVal ->
                     val minutes = numberPickerMinutes.value
                     setTime(minutes, newVal)
-                    tvTimer.text = getFormattedTime(minutes, newVal)
                 }
 
-                tvTimer.text = getFormattedTime(0, getBase())
                 initialReset()
-                liveData.observe(viewLifecycleOwner) {
+
+                ldTimer.observe(viewLifecycleOwner) {
                     tvTimer.text = it
+                }
+                ldMinutes.observe(viewLifecycleOwner) {
+                    numberPickerMinutes.value = it
+                }
+                ldSeconds.observe(viewLifecycleOwner) {
+                    numberPickerSeconds.value = it
+                    if (it == 0 && ldMinutes.value == 0) {
+                        btnStart.isEnabled = true
+                    }
+                }
+                ldPickersState.observe(viewLifecycleOwner) {
+                    numberPickerMinutes.isEnabled = it
+                    numberPickerSeconds.isEnabled = it
+                }
+                ldButtonStartState.observe(viewLifecycleOwner) {
+                    btnStart.isEnabled = it
                 }
             }
         }

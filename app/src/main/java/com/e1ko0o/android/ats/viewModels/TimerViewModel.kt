@@ -6,6 +6,7 @@ import android.media.SoundPool
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -20,21 +21,29 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
 
     private var job: Job = Job()
 
-    val liveData: MutableLiveData<String> = MutableLiveData()
+    val ldTimer: MutableLiveData<String> = MutableLiveData()
+    val ldMinutes = MutableLiveData<Int>()
+    val ldSeconds = MutableLiveData<Int>()
+    val ldPickersState = MutableLiveData<Boolean>()
+    val ldButtonStartState = MutableLiveData<Boolean>()
 
     fun start() {
         startTime = 0
         val timer = base + startTime + pauseTime
-        liveData.value = getFormattedTime(timer)
 
         job = viewModelScope.launch {
             for (i in timer downTo 0 step 1) {
                 ensureActive()
-                if (i != base)
+                ldPickersState.value = false
+                ldButtonStartState.value = false
+                if ((i != base && pauseTime == 0) || (i <= pauseTime && pauseTime != 0 && i != 0))
                     delay(1000)
                 curTime = i
-                liveData.value = getFormattedTime(curTime)
-                if (i == 0) {
+                if (ldMinutes.value != getMinutes(curTime))
+                    ldMinutes.value = getMinutes(curTime)
+                ldSeconds.value = getSeconds(curTime)
+
+                if (curTime == 0) {
                     val sp = SoundPool.Builder().build()
                     val context = getApplication<Application>().applicationContext
                     sp.load(context, R.raw.praise_the_lord, 1)
@@ -62,9 +71,16 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun saveState() {
+        if (curTime != 0)
+            base = curTime
+    }
+
     fun pause() {
         pauseTime = curTime
         base = 0
+        ldPickersState.value = false
+        ldButtonStartState.value = true
         job.cancel(
             "Job canceled by TimerViewModel.pause()",
             Throwable("Job canceled by TimerViewModel.pause()")
@@ -75,24 +91,21 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         startTime = 0
         pauseTime = 0
         curTime = 0
-        liveData.value = getFormattedTime(base + startTime + pauseTime + curTime)
-        job.cancel(
-            "Job canceled by TimerViewModel.initialReset()",
-            Throwable("Job canceled by TimerViewModel.initialReset()")
-        )
+        if (ldMinutes.value != getMinutes(base + startTime + pauseTime + curTime))
+            ldMinutes.value = getMinutes(base + startTime + pauseTime + curTime)
+        ldSeconds.value = getSeconds(base + startTime + pauseTime + curTime)
     }
-
-    fun saveState() {
-        base += curTime + startTime + pauseTime
-    }
-
-    fun getBase() = base
 
     fun reset() {
         startTime = 0
         pauseTime = 0
         base = 0
-        liveData.value = getFormattedTime(base + startTime + pauseTime)
+        curTime = 0
+        ldPickersState.value = true
+        ldButtonStartState.value = true
+        if (ldMinutes.value != getMinutes(base + startTime + pauseTime + curTime))
+            ldMinutes.value = getMinutes(base + startTime + pauseTime + curTime)
+        ldSeconds.value = getSeconds(base + startTime + pauseTime + curTime)
         job.cancel(
             "Job canceled by TimerViewModel.reset()",
             Throwable("Job canceled by TimerViewModel.reset()")
@@ -105,20 +118,6 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         base = minutes * 60 + seconds
     }
 
-    fun getFormattedTime(minutes: Int, seconds: Int) = getFormattedTime(minutes * 60 + seconds)
-
-    private fun getFormattedTime(seconds: Int): String {
-        val minute = seconds / 60
-        val second = seconds % 60
-        var s = ""
-        if (minute.toString().length == 1 && second.toString().length == 1)
-            s = "0$minute:0$second"
-        else if (minute.toString().length == 1 && second.toString().length == 2)
-            s = "0$minute:$second"
-        else if (minute.toString().length == 2 && second.toString().length == 1)
-            s = "$minute:0$second"
-        else if (minute.toString().length == 2 && second.toString().length == 2)
-            s = "$minute:$second"
-        return s
-    }
+    private fun getMinutes(totalSeconds: Int): Int = totalSeconds / 60
+    private fun getSeconds(totalSeconds: Int): Int = totalSeconds % 60
 }

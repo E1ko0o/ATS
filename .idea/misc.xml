@@ -4,8 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Acer/Desktop/ATS/app/src/main/res/layout/fragment_timer.xml" value="0.1" />
+        <entry key="..\:/Users/slava/Desktop/ATS/app/src/main/res/layout-land/fragment_stopwatch.xml" value="0.25" />
+        <entry key="..\:/Users/slava/Desktop/ATS/app/src/main/res/layout-land/fragment_timer_spinner.xml" value="0.18" />
         <entry key="..\:/Users/slava/Desktop/ATS/app/src/main/res/layout/1fragment_timer.xml" value="0.1" />
         <entry key="..\:/Users/slava/Desktop/ATS/app/src/main/res/layout/fragment_createalarm.xml" value="0.15" />
+        <entry key="..\:/Users/slava/Desktop/ATS/app/src/main/res/layout/fragment_stopwatch.xml" value="0.14814814814814814" />
         <entry key="..\:/Users/slava/Desktop/ATS/app/src/main/res/layout/fragment_timer.xml" value="0.14814814814814814" />
         <entry key="..\:/Users/slava/Desktop/ATS/app/src/main/res/layout/fragment_timer_old.xml" value="0.14814814814814814" />
         <entry key="..\:/Users/slava/Desktop/ATS/app/src/main/res/layout/fragment_timer_spinner.xml" value="0.16080402010050251" />
