@@ -10,34 +10,53 @@ class StopwatchViewModel(application: Application) : AndroidViewModel(applicatio
     private var pauseTime: Long = 0
     private var base: Long = 0
 
+    var isRunning: Boolean = false
+
     fun start(chronometer: Chronometer) {
+        isRunning = true
         startTime = SystemClock.elapsedRealtime()
-        chronometer.base = base + startTime + pauseTime
+        chronometer.base = startTime - pauseTime
+        pauseTime = 0
         chronometer.start()
     }
 
     fun pause(chronometer: Chronometer) {
-        pauseTime = chronometer.base - SystemClock.elapsedRealtime()
+        isRunning = false
+        pauseTime = SystemClock.elapsedRealtime() - chronometer.base
         chronometer.stop()
     }
 
     fun initialReset(chronometer: Chronometer) {
         startTime = SystemClock.elapsedRealtime()
-        pauseTime = 0
-        chronometer.base = base + startTime + pauseTime
-        chronometer.stop()
+        // below to running timer
+        if (base != 0L && base > 2700000000)
+            chronometer.base = startTime + pauseTime - (startTime - base)
+        // below to paused timer
+        else if (base != 0L && pauseTime != 0L)
+            chronometer.base = startTime - pauseTime
+        // below to initial state (timer is 00:00)
+        else
+            chronometer.base = base + startTime + pauseTime
+
+        if (isRunning)
+            chronometer.start()
+        else
+            chronometer.stop()
     }
 
     fun reset(chronometer: Chronometer) {
-        startTime = SystemClock.elapsedRealtime()
+        isRunning = false
         pauseTime = 0
         base = 0
-        chronometer.base = base + startTime + pauseTime
+        chronometer.base = SystemClock.elapsedRealtime()
         chronometer.stop()
     }
 
-    fun saveState() {
-        this.base = pauseTime
+    fun saveState(base: Long) {
+        if (pauseTime == 0L)
+            this.base = base
+        else
+            this.base = pauseTime
     }
 
     fun getBase() = base

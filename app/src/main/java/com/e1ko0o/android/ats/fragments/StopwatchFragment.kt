@@ -10,7 +10,6 @@ import com.e1ko0o.android.ats.R
 import com.e1ko0o.android.ats.databinding.FragmentStopwatchBinding
 import com.e1ko0o.android.ats.viewModels.StopwatchViewModel
 
-
 class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
     private lateinit var binding: FragmentStopwatchBinding
     private lateinit var viewModel: StopwatchViewModel
@@ -42,7 +41,10 @@ class StopwatchFragment : Fragment(R.layout.fragment_stopwatch) {
     }
 
     override fun onDestroyView() {
-        viewModel.saveState()
+        if (viewModel.isRunning)
+            viewModel.saveState(binding.chronometer.base)
+        else
+            viewModel.saveState(0)
         super.onDestroyView()
     }
 

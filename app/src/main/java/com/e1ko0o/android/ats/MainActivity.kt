@@ -27,9 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPostResume() {
         super.onPostResume()
-        if (binding.fragmentContainer.isEmpty()) {
+        if (binding.fragmentContainer.isEmpty())
             changeFragment(TimerFragment.getInstance())
-        }
     }
 
     private fun changeFragment(fragment: Fragment) {
@@ -38,5 +37,4 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack(null)
             .commit()
     }
-
 }
