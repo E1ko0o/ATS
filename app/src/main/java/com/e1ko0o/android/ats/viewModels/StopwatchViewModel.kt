@@ -2,6 +2,7 @@ package com.e1ko0o.android.ats.viewModels
 
 import android.app.Application
 import android.os.SystemClock
+import android.util.Log
 import android.widget.Chronometer
 import androidx.lifecycle.AndroidViewModel
 
@@ -29,7 +30,7 @@ class StopwatchViewModel(application: Application) : AndroidViewModel(applicatio
     fun initialReset(chronometer: Chronometer) {
         startTime = SystemClock.elapsedRealtime()
         // below to running timer
-        if (base != 0L && base > 2700000000)
+        if (base != 0L && pauseTime == 0L)
             chronometer.base = startTime + pauseTime - (startTime - base)
         // below to paused timer
         else if (base != 0L && pauseTime != 0L)
